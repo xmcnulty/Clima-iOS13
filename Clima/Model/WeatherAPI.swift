@@ -14,16 +14,12 @@ struct WeatherAPI {
     static let baseURL = "https://api.openweathermap.org/data/2.5/weather"
     static let token = "cb1c9a074cd767365a4754afc5e50f29"
     
-    enum Units: String {
-        case standard = "standard", metric = "metric", imperial = "imperial"
-    }
-    
     /// Generates a URL object wtih the OpenWeather API base URL, and parameters conforming to the API docs.
     /// - Parameters:
     ///   - city: city to query API for current weather
-    ///   - units: optional units to specify in api request
+    ///   - units: optional ['WeatherAPI.Units'](WeatherAPI.Units) to specify in api request
     /// - Returns: URL for the API call based on the passed parameters
-    static func citySearchURL(city: String, units: Units? = nil) -> URL? {
+    static func citySearchURL(city: String, units: WeatherAPI.Units? = nil) -> URL? {
         var components = URLComponents(string: WeatherAPI.baseURL)
         var queryItems: [URLQueryItem] = []
         

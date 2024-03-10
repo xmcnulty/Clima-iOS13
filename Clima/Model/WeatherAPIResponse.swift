@@ -12,13 +12,15 @@ extension WeatherAPI {
     struct Response {
         private init() {}
         
-        static func parseJSONResponse(weatherData: Data) -> WeatherData? {
+        static func parseJSONResponse(weatherData: Data) -> WeatherModel? {
             let decoder = JSONDecoder()
             
             do {
                 let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
                 
-                return decodedData
+                let model = WeatherModel(conditionId: decodedData.weather[0].id, cityName: decodedData.name, temp: decodedData.main.temp)
+                
+                return model
             } catch {
                 print(error)
             }
