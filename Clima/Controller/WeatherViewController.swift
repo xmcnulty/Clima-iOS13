@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import CoreLocation
 
-class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManagerDelegate {
+class WeatherViewController: UIViewController {
 
     @IBOutlet weak var conditionImageView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -16,15 +17,22 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     @IBOutlet weak var searchTextField: UITextField!
     
     var weatherManager = WeatherManager()
+    var locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        locationManager.requestWhenInUseAuthorization() // request permission to use location
+        
         searchTextField.delegate = self
         weatherManager.delegate = self
     }
+}
 
+//MARK: - UITextFieldDelegate
+
+extension WeatherViewController: UITextFieldDelegate {
     @IBAction func searchPressed(_ sender: UIButton) {
         searchTextField.endEditing(true)
     }
@@ -53,7 +61,15 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         // reset search bar
         textField.text = ""
     }
-    
+}
+
+//MARK: - WeatherManagerDelegate
+
+extension WeatherViewController: WeatherManagerDelegate {
+    /// Delegate function called when weather is updated from remote API call
+    /// - Parameters:
+    ///   - manager: Weather manager handling API functionality
+    ///   - weather: Weather returned from API
     func didUpdateWeather(_ manager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
             self.cityLabel.text = weather.cityName
@@ -64,5 +80,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             }
         }
     }
+    
+    func didFailWithError(_ manager: WeatherManager, error: Error) {
+        print("Received error.")
+    }
 }
-

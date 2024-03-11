@@ -12,7 +12,7 @@ extension WeatherAPI {
     struct Response {
         private init() {}
         
-        static func parseJSONResponse(weatherData: Data) -> WeatherModel? {
+        static func parseJSONResponse(_ weatherData: Data) throws -> WeatherModel {
             let decoder = JSONDecoder()
             
             do {
@@ -22,10 +22,8 @@ extension WeatherAPI {
                 
                 return model
             } catch {
-                print(error)
+                throw error
             }
-            
-            return nil
         }
     }
 }
