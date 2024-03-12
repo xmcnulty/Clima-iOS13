@@ -21,8 +21,14 @@ struct WeatherManager {
     
     var delegate: WeatherManagerDelegate? = nil
     
-    func fetchWeather(city: String) {
-        if let url = WeatherAPI.citySearchURL(city: city, units: .metric) {
+    func fetchWeatherByCity(with city: String) {
+        if let url = WeatherAPI.citySearchURL(city: city) {
+            performRequest(with: url)
+        }
+    }
+    
+    func fetchWeatherByPosition(latitude: Double, longitude: Double) {
+        if let url = WeatherAPI.coordinateSearchURL(lat: latitude, lon: longitude) {
             performRequest(with: url)
         }
     }

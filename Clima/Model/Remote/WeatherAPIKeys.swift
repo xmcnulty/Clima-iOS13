@@ -13,5 +13,7 @@ extension WeatherAPI {
         static let query = "q"
         static let apiKey = "appid"
         static let units = "units"
+        static let latitude = "lat"
+        static let longitude = "lon"
     }
 }

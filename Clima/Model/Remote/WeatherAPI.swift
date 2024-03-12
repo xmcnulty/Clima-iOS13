@@ -19,16 +19,27 @@ struct WeatherAPI {
     ///   - city: city to query API for current weather
     ///   - units: optional ['WeatherAPI.Units'](WeatherAPI.Units) to specify in api request
     /// - Returns: URL for the API call based on the passed parameters
-    static func citySearchURL(city: String, units: WeatherAPI.Units? = nil) -> URL? {
+    static func citySearchURL(city: String, units: WeatherAPI.Units = .metric) -> URL? {
         var components = URLComponents(string: WeatherAPI.baseURL)
         var queryItems: [URLQueryItem] = []
         
         queryItems.append(URLQueryItem(name: WeatherAPI.Keys.apiKey, value: WeatherAPI.token))
         queryItems.append(URLQueryItem(name: WeatherAPI.Keys.query, value: city))
+        queryItems.append(URLQueryItem(name: WeatherAPI.Keys.units, value: units.rawValue))
         
-        if let u = units {
-            queryItems.append(URLQueryItem(name: WeatherAPI.Keys.units, value: u.rawValue))
-        }
+        components?.queryItems = queryItems
+        
+        return components?.url
+    }
+    
+    static func coordinateSearchURL(lat: Double, lon: Double, units: WeatherAPI.Units = .metric) -> URL? {
+        var components = URLComponents(string: WeatherAPI.baseURL)
+        var queryItems: [URLQueryItem] = []
+        
+        queryItems.append(URLQueryItem(name: WeatherAPI.Keys.apiKey, value: WeatherAPI.token))
+        queryItems.append(URLQueryItem(name: WeatherAPI.Keys.latitude, value: String(lat)))
+        queryItems.append(URLQueryItem(name: WeatherAPI.Keys.longitude, value: String(lon)))
+        queryItems.append(URLQueryItem(name: WeatherAPI.Keys.units, value: units.rawValue))
         
         components?.queryItems = queryItems
         

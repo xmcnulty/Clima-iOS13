@@ -22,11 +22,19 @@ class WeatherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
         locationManager.requestWhenInUseAuthorization() // request permission to use location
         
+        locationManager.requestLocation() // get the current location
+        
         searchTextField.delegate = self
         weatherManager.delegate = self
+    }
+    
+    @IBAction func locationButtonPressed(_ sender: UIButton) {
+        locationManager.requestLocation()
     }
 }
 
@@ -54,7 +62,7 @@ extension WeatherViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         // use text to search for weather
         if let city = textField.text {
-            weatherManager.fetchWeather(city: city)
+            weatherManager.fetchWeatherByCity(with: city)
         }
         
         
@@ -84,4 +92,25 @@ extension WeatherViewController: WeatherManagerDelegate {
     func didFailWithError(_ manager: WeatherManager, error: Error) {
         print("Received error.")
     }
+}
+
+//MARK: - CLLocationManagerDelegate
+
+extension WeatherViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            manager.stopUpdatingLocation()
+            
+            weatherManager.fetchWeatherByPosition(
+                latitude: location.coordinate.latitude,
+                longitude: location.coordinate.longitude
+            )
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error.localizedDescription)
+    }
+    
+    
 }
